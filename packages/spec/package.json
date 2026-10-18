@@ -1,0 +1,36 @@
+{
+  "name": "@schema-introspection/spec",
+  "version": "0.0.0",
+  "description": "A type-only protocol for schema introspection",
+  "keywords": [
+    "interface",
+    "introspection",
+    "schema",
+    "standard",
+    "typescript"
+  ],
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "schema-introspection-spec": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

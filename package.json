@@ -1,0 +1,30 @@
+{
+  "name": "schema-introspection",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "check": "turbo run check",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "oxfmt": "^0.73.0",
+    "oxlint": "^1.88.0",
+    "turbo": "^2.11.9"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "oxfmt",
+      "oxlint"
+    ],
+    "*.{json,md,yaml,yml}": [
+      "oxfmt"
+    ]
+  },
+  "packageManager": "pnpm@12.9.0"
+}
