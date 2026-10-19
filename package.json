@@ -8,6 +8,7 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
+    "test": "turbo run test",
     "prepare": "husky"
   },
   "devDependencies": {

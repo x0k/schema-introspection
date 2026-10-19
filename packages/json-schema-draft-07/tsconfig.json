@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "customConditions": ["schema-introspection-spec"],
+    "declaration": true,
+    "exactOptionalPropertyTypes": true,
+    "isolatedDeclarations": true,
+    "lib": ["ESNext"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "./dist",
+    "rewriteRelativeImportExtensions": true,
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ESNext"
+  },
+  "include": ["src"]
+}

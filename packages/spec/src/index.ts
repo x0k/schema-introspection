@@ -14,7 +14,7 @@
  * implementations report subsets of.
  */
 
-export * from "./annotations.js";
-export * from "./kinds.js";
-export * from "./protocol.js";
-export * from "./relations.js";
+export * from "./annotations.ts";
+export * from "./kinds.ts";
+export * from "./protocol.ts";
+export * from "./relations.ts";

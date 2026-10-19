@@ -67,8 +67,11 @@ export declare namespace SchemaIntrospectionV1 {
      * Resolves value-dependent structure. With a value, an implementation may
      * narrow combinator and conditional edges to those that apply to it,
      * e.g. by scoring `one-of` and `any-of` children against the value, or
-     * by reporting only the conditional branch that applies. Without one, it
-     * reports every edge.
+     * by reporting only the conditional branch that applies. Narrowing only
+     * removes edges: it never changes the node's kind or collapses a
+     * combinator with a single remaining edge, so the edge count still
+     * reports how many alternatives apply. Without a value, every edge is
+     * reported.
      */
     readonly context?: Context;
   }
@@ -84,13 +87,14 @@ export declare namespace SchemaIntrospectionV1 {
     /** Descriptive, constraining, or implementation-specific information. */
     readonly annotations: Readonly<Annotations[Kind]>;
     /**
-     * Direct child edges, in stable order. Coverage is exhaustive per
-     * relation that applies to the node, so an absent relation is unknown,
-     * not zero edges. Unconstrained categories report a child of kind `any`,
-     * e.g. implicitly allowed additional properties; rejected categories,
-     * kind `never`.
+     * Direct child edges, in stable order; always present, empty when the
+     * node reports no child relations. Coverage is exhaustive per relation
+     * that applies to the node, so an absent relation is unknown, not zero
+     * edges. Unconstrained categories report a child of kind `any`, e.g.
+     * implicitly allowed additional properties; rejected categories, kind
+     * `never`.
      */
-    readonly edges?: readonly Edge<Annotations, Relation>[];
+    readonly edges: readonly Edge<Annotations, Relation>[];
   }
 
   /** A node of any kind of the annotation map, discriminated by `kind`. */

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "customConditions": ["schema-introspection-spec"],
     "declaration": true,
     "exactOptionalPropertyTypes": true,
@@ -8,6 +9,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "outDir": "./dist",
+    "rewriteRelativeImportExtensions": true,
     "rootDir": "./src",
     "skipLibCheck": true,
     "strict": true,
