@@ -26,8 +26,8 @@ export declare namespace RelationV1 {
   }
 
   /** Applies its child to names neither `property` nor `pattern-property` matches. */
-  export interface AdditionalProperty {
-    readonly relation: "additional-property";
+  export interface RemainingProperty {
+    readonly relation: "remaining-property";
   }
 
   /** Applies its child to property names as strings. */

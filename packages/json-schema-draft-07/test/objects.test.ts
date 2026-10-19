@@ -38,7 +38,7 @@ test("object properties, required names and property categories", () => {
   assert.equal(pattern.pattern, "^x-");
   assert.equal(pattern.node().kind, "boolean");
 
-  const additional = edgeOf(node, "additional-property");
+  const additional = edgeOf(node, "remaining-property");
   assert.equal(additional.node().kind, "never");
 
   const names = edgeOf(node, "property-name");
@@ -47,5 +47,5 @@ test("object properties, required names and property categories", () => {
 
 test("unconstrained object category exposes an any child", () => {
   const object = introspect({ type: "object" }, { direction: "input" });
-  assert.equal(edgeOf(object, "additional-property").node().kind, "any");
+  assert.equal(edgeOf(object, "remaining-property").node().kind, "any");
 });

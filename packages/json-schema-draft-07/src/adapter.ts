@@ -56,19 +56,33 @@ function asSchema(value: unknown): JsonSchema {
   return isJsonSchema(value) ? value : true;
 }
 
+/** Resolution state available to validators and mergers. */
+export interface ResolutionContext {
+  /** The root schema passed to the adapter. */
+  readonly rootSchema: JsonSchema;
+  /** Effective base URI of the root schema. */
+  readonly rootBaseUri: string;
+  /** Base URI of the schema currently being processed. */
+  readonly baseUri: string;
+  /** Additional schema documents, keyed by their retrieval URI. */
+  readonly documents: Readonly<Record<string, JsonSchema>>;
+}
+
 /** Resolves whether a value matches a schema, e.g. by wrapping Ajv. */
 export interface Validator {
-  isValid(schemaDefinition: JsonSchema, rootSchema: JsonSchema, value: unknown): boolean;
+  isValid(context: ResolutionContext, schemaDefinition: JsonSchema, value: unknown): boolean;
 }
 
 /** Merges `allOf` into a schema, e.g. by wrapping a merge library. */
 export interface Merger {
-  mergeAllOf(schema: JsonSchema): JsonSchema;
+  mergeAllOf(context: ResolutionContext, schema: JsonSchema): JsonSchema;
 }
 
 export type JsonSchemaDraft07Validator = Validator;
 
 export type JsonSchemaDraft07Merger = Merger;
+
+export type JsonSchemaDraft07UnresolvedReference = "unknown" | "throw";
 
 export interface JsonSchemaDraft07AdapterOptions {
   /** Retrieval URI for the root schema. */
@@ -79,6 +93,8 @@ export interface JsonSchemaDraft07AdapterOptions {
   readonly validator?: Validator;
   /** When provided, schemas are merged before they are introspected. */
   readonly merger?: Merger;
+  /** How unresolved references are reported; defaults to `"unknown"`. */
+  readonly onUnresolvedReference?: JsonSchemaDraft07UnresolvedReference;
 }
 
 export type JsonSchemaDraft07Node = SchemaIntrospectionV1.Node<AnnotationMap, Relation>;
@@ -96,14 +112,18 @@ class Introspector {
   private readonly resolver: SchemaResolver;
   private readonly validator: Validator | undefined;
   private readonly merger: Merger | undefined;
+  private readonly documents: Readonly<Record<string, JsonSchema>>;
+  private readonly onUnresolvedReference: JsonSchemaDraft07UnresolvedReference;
   private readonly cache: Map<JsonSchema, Map<string, Node>> = new Map();
-  private readonly mergedSchemas: WeakMap<object, JsonSchema> = new WeakMap();
-  private readonly mergedResults: WeakSet<object> = new WeakSet();
+  private readonly mergedSchemas: WeakMap<object, Map<string, JsonSchema>> = new WeakMap();
+  private readonly mergedResults: WeakMap<object, Set<string>> = new WeakMap();
 
   constructor(schema: JsonSchema, options: JsonSchemaDraft07AdapterOptions) {
     this.resolver = new SchemaResolver(schema, options);
     this.validator = options.validator;
     this.merger = options.merger;
+    this.documents = options.documents ?? {};
+    this.onUnresolvedReference = options.onUnresolvedReference ?? "unknown";
   }
 
   introspect(options: SchemaIntrospectionV1.Options): JsonSchemaDraft07Node {
@@ -125,7 +145,7 @@ class Introspector {
     }
 
     if (isSchemaObject(schema) && schema.$ref === undefined) {
-      const merged = this.mergeAllOf(schema);
+      const merged = this.mergeAllOf(schema, base);
       if (merged !== schema) {
         const node = this.build(merged, base, context);
         if (cacheable) {
@@ -139,6 +159,9 @@ class Introspector {
     if (schema.$ref !== undefined) {
       const resolved = this.resolveReference(schema, base);
       if (resolved === undefined) {
+        if (this.onUnresolvedReference === "throw") {
+          throw new Error(`Cannot resolve reference "${schema.$ref}" from "${base}"`);
+        }
         node = this.createKindNode("unknown", this.annotations(schema, "unknown"));
       } else {
         node = this.build(resolved.schema, resolved.base, context);
@@ -166,37 +189,60 @@ class Introspector {
     byBase.set(base, node);
   }
 
-  private mergeAllOf(schema: JsonSchemaObject): JsonSchema {
-    if (this.merger === undefined || this.mergedResults.has(schema)) {
+  private resolutionContext(base: string): ResolutionContext {
+    return {
+      rootSchema: this.resolver.root,
+      rootBaseUri: this.resolver.base,
+      baseUri: base,
+      documents: this.documents,
+    };
+  }
+
+  private mergeAllOf(schema: JsonSchemaObject, base: string): JsonSchema {
+    if (this.merger === undefined || this.mergedResults.get(schema)?.has(base) === true) {
       return schema;
     }
 
-    const cached = this.mergedSchemas.get(schema);
+    const cached = this.mergedSchemas.get(schema)?.get(base);
     if (cached !== undefined) {
       return cached;
     }
 
     try {
-      const merged = this.merger.mergeAllOf(schema);
+      const merged = this.merger.mergeAllOf(this.resolutionContext(base), schema);
       if (!isJsonSchema(merged)) {
-        this.mergedSchemas.set(schema, schema);
+        this.setMergedSchema(schema, base, schema);
         return schema;
       }
       if (isSchemaObject(merged)) {
-        this.mergedResults.add(merged);
+        let bases = this.mergedResults.get(merged);
+        if (bases === undefined) {
+          bases = new Set();
+          this.mergedResults.set(merged, bases);
+        }
+        bases.add(base);
       }
-      this.mergedSchemas.set(schema, merged);
+      this.setMergedSchema(schema, base, merged);
       return merged;
     } catch {
-      this.mergedSchemas.set(schema, schema);
+      this.setMergedSchema(schema, base, schema);
       return schema;
     }
+  }
+
+  private setMergedSchema(schema: object, base: string, merged: JsonSchema): void {
+    let byBase = this.mergedSchemas.get(schema);
+    if (byBase === undefined) {
+      byBase = new Map();
+      this.mergedSchemas.set(schema, byBase);
+    }
+    byBase.set(base, merged);
   }
 
   private isValid(schema: JsonSchema, base: string, value: unknown): boolean {
     if (this.validator !== undefined) {
       try {
-        return this.validator.isValid(schema, this.resolver.root, value);
+        return this.validator.isValid(this.resolutionContext(base), schema, value);
       } catch {
         return matchesJsonSchema(schema, value, base, this.resolver);
       }
@@ -423,7 +469,7 @@ class Introspector {
       : true;
     const additionalBase = this.childBase(additional, base);
     edges.push(
-      this.createEdge({ relation: "additional-property" }, (context?: Context): Node =>
+      this.createEdge({ relation: "remaining-property" }, (context?: Context): Node =>
         this.build(additional, additionalBase, context),
       ),
     );
@@ -472,7 +518,7 @@ class Introspector {
       const containsSchema = asSchema(schema.contains);
       const containsBase = this.childBase(containsSchema, base);
       edges.push(
-        this.createEdge({ relation: "draft07:contains" }, (context?: Context): Node =>
+        this.createEdge({ relation: "json-schema-draft-07:contains" }, (context?: Context): Node =>
           this.build(containsSchema, containsBase, context),
         ),
       );
@@ -612,7 +658,7 @@ class Introspector {
     const child = asSchema(schema.not);
     const childBase = this.childBase(child, base);
     return this.createKindNode("unknown", this.annotations(schema, "unknown"), [
-      this.createEdge({ relation: "draft07:not" }, (context?: Context): Node =>
+      this.createEdge({ relation: "json-schema-draft-07:not" }, (context?: Context): Node =>
         this.build(child, childBase, context),
       ),
     ]);

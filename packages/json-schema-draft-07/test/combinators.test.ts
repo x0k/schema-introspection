@@ -43,7 +43,7 @@ test("type unions are any-of nodes", () => {
 test("not is exposed as a namespaced relation", () => {
   const node = introspect({ not: { type: "string" } }, { direction: "input" });
   assert.equal(node.kind, "unknown");
-  const not = edgeOf(node, "draft07:not");
+  const not = edgeOf(node, "json-schema-draft-07:not");
   assert.equal(not.node().kind, "string");
 });
 

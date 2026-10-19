@@ -52,7 +52,12 @@ export declare namespace SchemaIntrospectionV1 {
     readonly introspect: (options: Options) => Node<Annotations, Relation>;
   }
 
-  /** The direction a view describes. */
+  /**
+   * The direction a view describes. Its effect is adapter-defined: schema
+   * languages that distinguish input and output may change structure,
+   * requiredness, or defaults, while others, such as JSON Schema, may ignore
+   * it.
+   */
   type Direction = "input" | "output";
 
   interface Context {
@@ -117,7 +122,9 @@ export declare namespace SchemaIntrospectionV1 {
   > = Relation & {
     /**
      * Returns the child node for the same direction; `context.value` is the
-     * child-local value. Calls without a context for the same effective
+     * child-local value. Which value is child-local, and which path segment
+     * the relation contributes, is defined by the relation; custom relations
+     * must document both. Calls without a context for the same effective
      * target return the same node object, preserving cycles.
      */
     readonly node: (context?: Context) => Node<Annotations, Relation>;

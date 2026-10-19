@@ -4,8 +4,10 @@
 
 The protocol is expressed only as TypeScript, in
 [`packages/spec`](./packages/spec). Adapters implement it for concrete schema
-languages; the JSON Schema draft-07 adapter lives in
-[`packages/json-schema-draft-07`](./packages/json-schema-draft-07).
+languages:
+
+- [JSON Schema draft-07](./packages/json-schema-draft-07)
+- [JSON Schema 2020-12](./packages/json-schema-2020-12)
 
 ```ts
 import { adapter } from "@schema-introspection/json-schema-draft-07";

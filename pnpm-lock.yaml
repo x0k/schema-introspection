@@ -182,6 +182,25 @@ importers:
         specifier: ^2.11.9
         version: 2.11.9
 
+  packages/json-schema-2020-12:
+    dependencies:
+      '@schema-introspection/spec':
+        specifier: workspace:*
+        version: link:../spec
+      json-schema-typed:
+        specifier: ^9.0.0
+        version: 9.0.0
+    devDependencies:
+      '@types/node':
+        specifier: ^26.6.5
+        version: 26.6.5
+      ajv:
+        specifier: ^8.20.0
+        version: 8.20.0
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+
   packages/json-schema-draft-07:
     dependencies:
       '@schema-introspection/spec':
@@ -632,6 +651,9 @@ packages:
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
 
+  json-schema-typed@9.0.0:
+    resolution: {integrity: sha512-t+dkn3pLaz7ku3ELaBKBSQNjd0Sir5zR7Y4CpAR5a+UEH60NefBEAhAgJuWqDH5o4HDfH+EQjmXeQMLc+Xnbdg==}
+
   lint-staged@17.6.0:
     resolution: {integrity: sha512-nOhBfYkZEwkFtNzD5pK9s9LkcWoxJ+whLzEnhqi9nl7zTB5n7tg8+9iYgMGx2Wm3VlLu8cbNj0RACzY+nWi5iQ==}
     engines: {node: '>=22.22.1'}
@@ -921,6 +943,8 @@ snapshots:
   husky@9.1.7: {}
 
   json-schema-traverse@1.0.0: {}
+
+  json-schema-typed@9.0.0: {}
 
   lint-staged@17.6.0:
     dependencies:

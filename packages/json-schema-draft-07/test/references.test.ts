@@ -68,4 +68,14 @@ test("external documents and unresolved references", () => {
   const missing = introspect({ $ref: "missing.json#/value" }, { direction: "input" });
   assert.equal(missing.kind, "unknown");
   assert.equal(missing.annotations.$ref, "missing.json#/value");
+
+  assert.throws(
+    () =>
+      introspect(
+        { $ref: "missing.json#/value" },
+        { direction: "input" },
+        { onUnresolvedReference: "throw" },
+      ),
+    /Cannot resolve reference "missing\.json#\/value"/,
+  );
 });
