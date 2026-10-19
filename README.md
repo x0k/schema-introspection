@@ -8,6 +8,7 @@ languages:
 
 - [JSON Schema draft-07](./packages/json-schema-draft-07)
 - [JSON Schema 2020-12](./packages/json-schema-2020-12)
+- [Valibot](./packages/valibot)
 - [Zod](./packages/zod)
 
 ```ts
