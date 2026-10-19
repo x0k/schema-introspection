@@ -35,7 +35,7 @@ test("prefix items, remaining items and contains edges", () => {
   const additional = edgeOf(node, "items");
   assert.equal(additional.node().kind, "never");
 
-  const contains = edgeOf(node, "json-schema-2020-12:contains");
+  const contains = edgeOf(node, "si-json-schema-2020-12:contains");
   assert.equal(contains.node().kind, "integer");
 });
 
@@ -49,7 +49,7 @@ test("unevaluated items are exposed as a separate edge", () => {
     { direction: "input" },
   );
 
-  const unevaluated = edgeOf(node, "json-schema-2020-12:unevaluated-item");
+  const unevaluated = edgeOf(node, "si-json-schema-2020-12:unevaluated-item");
   assert.equal(unevaluated.node().kind, "boolean");
 });
 

@@ -148,21 +148,21 @@ test("date, bigint, set and file constraints", () => {
     introspect(v.pipe(v.date(), v.minValue(new Date(0)), v.maxValue(new Date(1000))), {
       direction: "input",
     }),
-    "valibot:date",
+    "si-valibot:date",
   );
   assert.equal(date.annotations.minimum?.getTime(), 0);
   assert.equal(date.annotations.maximum?.getTime(), 1000);
 
   const bigint = kindNode(
     introspect(v.pipe(v.bigint(), v.minValue(0n), v.maxValue(10n)), { direction: "input" }),
-    "valibot:bigint",
+    "si-valibot:bigint",
   );
   assert.equal(bigint.annotations.minimum, 0n);
   assert.equal(bigint.annotations.maximum, 10n);
 
   const set = kindNode(
     introspect(v.pipe(v.set(v.string()), v.minSize(1), v.maxSize(3)), { direction: "input" }),
-    "valibot:set",
+    "si-valibot:set",
   );
   assert.equal(set.annotations.minSize, 1);
   assert.equal(set.annotations.maxSize, 3);
@@ -171,7 +171,7 @@ test("date, bigint, set and file constraints", () => {
     introspect(v.pipe(v.file(), v.minSize(10), v.maxSize(100), v.mimeType(["image/png"])), {
       direction: "input",
     }),
-    "valibot:file",
+    "si-valibot:file",
   );
   assert.equal(file.annotations.minSize, 10);
   assert.equal(file.annotations.maxSize, 100);

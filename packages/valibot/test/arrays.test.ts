@@ -56,11 +56,11 @@ test("loose tuples accept any extra items and tuple rest schemas type them", () 
 test("maps and sets expose their element schemas", () => {
   const map = kindNode(
     introspect(v.map(v.string(), v.number()), { direction: "input" }),
-    "valibot:map",
+    "si-valibot:map",
   );
-  assert.equal(kindNode(edgeOf(map, "valibot:map-key").node(), "string").kind, "string");
-  assert.equal(kindNode(edgeOf(map, "valibot:map-value").node(), "number").kind, "number");
+  assert.equal(kindNode(edgeOf(map, "si-valibot:map-key").node(), "string").kind, "string");
+  assert.equal(kindNode(edgeOf(map, "si-valibot:map-value").node(), "number").kind, "number");
 
-  const set = kindNode(introspect(v.set(v.string()), { direction: "input" }), "valibot:set");
-  assert.equal(kindNode(edgeOf(set, "valibot:set-item").node(), "string").kind, "string");
+  const set = kindNode(introspect(v.set(v.string()), { direction: "input" }), "si-valibot:set");
+  assert.equal(kindNode(edgeOf(set, "si-valibot:set-item").node(), "string").kind, "string");
 });

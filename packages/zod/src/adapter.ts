@@ -70,7 +70,7 @@ export type ZodEdge = SchemaIntrospectionV1.Edge<AnnotationMap, Relation>;
 
 export interface ZodIntrospection extends SchemaIntrospectionV1<AnnotationMap, Relation> {}
 
-export const ZOD_VENDOR: string = "zod";
+export const ZOD_VENDOR: string = "si-zod";
 
 class Introspector {
   private readonly root: ZodSchema;
@@ -139,15 +139,15 @@ class Introspector {
       case "bigint":
         return this.buildBigInt(schema, extra);
       case "symbol":
-        return this.createKindNode("zod:symbol", this.annotations(schema, extra));
+        return this.createKindNode("si-zod:symbol", this.annotations(schema, extra));
       case "undefined":
-        return this.createKindNode("zod:undefined", this.annotations(schema, extra));
+        return this.createKindNode("si-zod:undefined", this.annotations(schema, extra));
       case "void":
-        return this.createKindNode("zod:void", this.annotations(schema, extra));
+        return this.createKindNode("si-zod:void", this.annotations(schema, extra));
       case "null":
         return this.createKindNode("null", this.annotations(schema, extra));
       case "nan":
-        return this.createKindNode("zod:nan", this.annotations(schema, extra));
+        return this.createKindNode("si-zod:nan", this.annotations(schema, extra));
       case "any":
       case "unknown":
         return this.createKindNode("any", this.annotations(schema, extra));
@@ -416,7 +416,7 @@ class Introspector {
       }
     }
 
-    return this.createKindNode("zod:bigint", annotations as BigIntAnnotation);
+    return this.createKindNode("si-zod:bigint", annotations as BigIntAnnotation);
   }
 
   private buildDate(schema: ZodSchema, extra: Readonly<Record<string, unknown>>): Node {
@@ -441,7 +441,7 @@ class Introspector {
       }
     }
 
-    return this.createKindNode("zod:date", annotations as DateAnnotation);
+    return this.createKindNode("si-zod:date", annotations as DateAnnotation);
   }
 
   private buildArray(
@@ -564,13 +564,13 @@ class Introspector {
     };
     const edges: Edge[] = [
       isZodSchema(definition.keyType)
-        ? this.createEdge({ relation: "zod:map-key" }, definition.keyType, direction)
-        : this.createNodeEdge({ relation: "zod:map-key" }, UNKNOWN_NODE),
+        ? this.createEdge({ relation: "si-zod:map-key" }, definition.keyType, direction)
+        : this.createNodeEdge({ relation: "si-zod:map-key" }, UNKNOWN_NODE),
       isZodSchema(definition.valueType)
-        ? this.createEdge({ relation: "zod:map-value" }, definition.valueType, direction)
-        : this.createNodeEdge({ relation: "zod:map-value" }, UNKNOWN_NODE),
+        ? this.createEdge({ relation: "si-zod:map-value" }, definition.valueType, direction)
+        : this.createNodeEdge({ relation: "si-zod:map-value" }, UNKNOWN_NODE),
     ];
-    return this.createKindNode("zod:map", annotations, edges);
+    return this.createKindNode("si-zod:map", annotations, edges);
   }
 
   private buildSet(
@@ -583,10 +583,10 @@ class Introspector {
     this.applySizeChecks(annotations, checksOf(schema));
     const edges: Edge[] = [
       isZodSchema(definition.valueType)
-        ? this.createEdge({ relation: "zod:set-item" }, definition.valueType, direction)
-        : this.createNodeEdge({ relation: "zod:set-item" }, UNKNOWN_NODE),
+        ? this.createEdge({ relation: "si-zod:set-item" }, definition.valueType, direction)
+        : this.createNodeEdge({ relation: "si-zod:set-item" }, UNKNOWN_NODE),
     ];
-    return this.createKindNode("zod:set", annotations as SetAnnotation, edges);
+    return this.createKindNode("si-zod:set", annotations as SetAnnotation, edges);
   }
 
   private buildUnion(
@@ -693,7 +693,7 @@ class Introspector {
           break;
       }
     }
-    return this.createKindNode("zod:file", annotations as FileAnnotation);
+    return this.createKindNode("si-zod:file", annotations as FileAnnotation);
   }
 
   private buildFunction(
@@ -708,14 +708,16 @@ class Introspector {
     };
     const edges: Edge[] = [];
     if (isZodSchema(definition.input)) {
-      edges.push(this.createEdge({ relation: "zod:function-input" }, definition.input, direction));
+      edges.push(
+        this.createEdge({ relation: "si-zod:function-input" }, definition.input, direction),
+      );
     }
     if (isZodSchema(definition.output)) {
       edges.push(
-        this.createEdge({ relation: "zod:function-output" }, definition.output, direction),
+        this.createEdge({ relation: "si-zod:function-output" }, definition.output, direction),
       );
     }
-    return this.createKindNode("zod:function", annotations, edges);
+    return this.createKindNode("si-zod:function", annotations, edges);
   }
 
   private buildPromise(
@@ -727,10 +729,10 @@ class Introspector {
     const definition = definitionOf(schema) as unknown as { readonly innerType?: unknown };
     const edges: Edge[] = [
       isZodSchema(definition.innerType)
-        ? this.createEdge({ relation: "zod:promise-value" }, definition.innerType, direction)
-        : this.createNodeEdge({ relation: "zod:promise-value" }, UNKNOWN_NODE),
+        ? this.createEdge({ relation: "si-zod:promise-value" }, definition.innerType, direction)
+        : this.createNodeEdge({ relation: "si-zod:promise-value" }, UNKNOWN_NODE),
     ];
-    return this.createKindNode("zod:promise", annotations, edges);
+    return this.createKindNode("si-zod:promise", annotations, edges);
   }
 
   private buildNullable(
@@ -958,19 +960,19 @@ class Introspector {
     }
     switch (typeof value) {
       case "bigint":
-        return "zod:bigint";
+        return "si-zod:bigint";
       case "boolean":
         return "boolean";
       case "number":
-        return Number.isNaN(value) ? "zod:nan" : Number.isInteger(value) ? "integer" : "number";
+        return Number.isNaN(value) ? "si-zod:nan" : Number.isInteger(value) ? "integer" : "number";
       case "object":
-        return value instanceof Date ? "zod:date" : "object";
+        return value instanceof Date ? "si-zod:date" : "object";
       case "string":
         return "string";
       case "symbol":
-        return "zod:symbol";
+        return "si-zod:symbol";
       case "undefined":
-        return "zod:undefined";
+        return "si-zod:undefined";
       default:
         return "unknown";
     }

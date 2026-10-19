@@ -65,14 +65,14 @@ test("functions and promises expose their input and output schemas", () => {
     introspect(z.function({ input: z.tuple([z.string()]), output: z.number() }), {
       direction: "input",
     }),
-    "zod:function",
+    "si-zod:function",
   );
-  assert.equal(kindNode(edgeOf(fn, "zod:function-input").node(), "array").kind, "array");
-  assert.equal(kindNode(edgeOf(fn, "zod:function-output").node(), "number").kind, "number");
+  assert.equal(kindNode(edgeOf(fn, "si-zod:function-input").node(), "array").kind, "array");
+  assert.equal(kindNode(edgeOf(fn, "si-zod:function-output").node(), "number").kind, "number");
 
   const promise = kindNode(
     introspect(z.promise(z.string()), { direction: "input" }),
-    "zod:promise",
+    "si-zod:promise",
   );
-  assert.equal(kindNode(edgeOf(promise, "zod:promise-value").node(), "string").kind, "string");
+  assert.equal(kindNode(edgeOf(promise, "si-zod:promise-value").node(), "string").kind, "string");
 });

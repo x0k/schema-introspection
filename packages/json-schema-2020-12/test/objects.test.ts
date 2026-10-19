@@ -60,6 +60,6 @@ test("unevaluated properties are exposed as a separate edge", () => {
     { direction: "input" },
   );
 
-  const unevaluated = edgeOf(node, "json-schema-2020-12:unevaluated-property");
+  const unevaluated = edgeOf(node, "si-json-schema-2020-12:unevaluated-property");
   assert.equal(unevaluated.node().kind, "string");
 });

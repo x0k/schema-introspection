@@ -150,7 +150,7 @@ export interface JsonSchema202012Introspection extends SchemaIntrospectionV1<
   Relation
 > {}
 
-export const JSON_SCHEMA_2020_12_VENDOR: string = "json-schema-2020-12";
+export const JSON_SCHEMA_2020_12_VENDOR: string = "si-json-schema-2020-12";
 
 class Introspector {
   private readonly resolver: SchemaResolver;
@@ -597,7 +597,7 @@ class Introspector {
       const unevaluatedBase = this.childBase(unevaluated, base);
       edges.push(
         this.createEdge(
-          { relation: "json-schema-2020-12:unevaluated-property" },
+          { relation: "si-json-schema-2020-12:unevaluated-property" },
           (context?: Context): Node => this.build(unevaluated, unevaluatedBase, context),
         ),
       );
@@ -629,8 +629,9 @@ class Introspector {
       const containsSchema = asSchema(schema.contains);
       const containsBase = this.childBase(containsSchema, base);
       edges.push(
-        this.createEdge({ relation: "json-schema-2020-12:contains" }, (context?: Context): Node =>
-          this.build(containsSchema, containsBase, context),
+        this.createEdge(
+          { relation: "si-json-schema-2020-12:contains" },
+          (context?: Context): Node => this.build(containsSchema, containsBase, context),
         ),
       );
     }
@@ -640,7 +641,7 @@ class Introspector {
       const unevaluatedBase = this.childBase(unevaluated, base);
       edges.push(
         this.createEdge(
-          { relation: "json-schema-2020-12:unevaluated-item" },
+          { relation: "si-json-schema-2020-12:unevaluated-item" },
           (context?: Context): Node => this.build(unevaluated, unevaluatedBase, context),
         ),
       );
@@ -776,7 +777,7 @@ class Introspector {
     const child = asSchema(schema.not);
     const childBase = this.childBase(child, base);
     return this.createKindNode("unknown", this.annotations(schema, "unknown"), [
-      this.createEdge({ relation: "json-schema-2020-12:not" }, (context?: Context): Node =>
+      this.createEdge({ relation: "si-json-schema-2020-12:not" }, (context?: Context): Node =>
         this.build(child, childBase, context),
       ),
     ]);

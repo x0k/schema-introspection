@@ -36,7 +36,7 @@ const NEVER_NODE: Node = { kind: "never", annotations: {}, edges: NO_EDGES };
 
 const NULL_NODE: Node = { kind: "null", annotations: {}, edges: NO_EDGES };
 
-const UNDEFINED_NODE: Node = { kind: "valibot:undefined", annotations: {}, edges: NO_EDGES };
+const UNDEFINED_NODE: Node = { kind: "si-valibot:undefined", annotations: {}, edges: NO_EDGES };
 
 const UNKNOWN_NODE: Node = { kind: "unknown", annotations: {}, edges: NO_EDGES };
 
@@ -114,7 +114,7 @@ export type ValibotEdge = SchemaIntrospectionV1.Edge<AnnotationMap, Relation>;
 
 export interface ValibotIntrospection extends SchemaIntrospectionV1<AnnotationMap, Relation> {}
 
-export const VALIBOT_VENDOR: string = "valibot";
+export const VALIBOT_VENDOR: string = "si-valibot";
 
 class Introspector {
   private readonly root: ValibotSchema;
@@ -188,15 +188,15 @@ class Introspector {
       case "bigint":
         return this.buildBigInt(schema, direction, extra);
       case "symbol":
-        return this.createKindNode("valibot:symbol", this.annotations(schema, extra));
+        return this.createKindNode("si-valibot:symbol", this.annotations(schema, extra));
       case "undefined":
-        return this.createKindNode("valibot:undefined", this.annotations(schema, extra));
+        return this.createKindNode("si-valibot:undefined", this.annotations(schema, extra));
       case "void":
-        return this.createKindNode("valibot:void", this.annotations(schema, extra));
+        return this.createKindNode("si-valibot:void", this.annotations(schema, extra));
       case "null":
         return this.createKindNode("null", this.annotations(schema, extra));
       case "nan":
-        return this.createKindNode("valibot:nan", this.annotations(schema, extra));
+        return this.createKindNode("si-valibot:nan", this.annotations(schema, extra));
       case "any":
       case "unknown":
         return this.createKindNode("any", this.annotations(schema, extra));
@@ -241,17 +241,17 @@ class Introspector {
       case "enum":
         return this.buildValues(schema, extra);
       case "file":
-        return this.buildFile(schema, "valibot:file", extra);
+        return this.buildFile(schema, "si-valibot:file", extra);
       case "blob":
-        return this.buildFile(schema, "valibot:blob", extra);
+        return this.buildFile(schema, "si-valibot:blob", extra);
       case "instance":
         return this.buildInstance(schema, extra);
       case "custom":
         return this.createKindNode("unknown", this.annotations(schema, { ...extra, custom: true }));
       case "function":
-        return this.createKindNode("valibot:function", this.annotations(schema, extra));
+        return this.createKindNode("si-valibot:function", this.annotations(schema, extra));
       case "promise":
-        return this.createKindNode("valibot:promise", this.annotations(schema, extra));
+        return this.createKindNode("si-valibot:promise", this.annotations(schema, extra));
       case "lazy":
         return this.buildLazy(schema, direction, context, extra);
       case "optional":
@@ -474,7 +474,7 @@ class Introspector {
       }
     }
 
-    return this.createKindNode("valibot:bigint", annotations as BigIntAnnotation);
+    return this.createKindNode("si-valibot:bigint", annotations as BigIntAnnotation);
   }
 
   private buildDate(
@@ -499,7 +499,7 @@ class Introspector {
       }
     }
 
-    return this.createKindNode("valibot:date", annotations as DateAnnotation);
+    return this.createKindNode("si-valibot:date", annotations as DateAnnotation);
   }
 
   private buildArray(
@@ -660,13 +660,13 @@ class Introspector {
     const value = (schema as { readonly value?: unknown }).value;
     const edges: Edge[] = [
       isValibotSchema(key)
-        ? this.createEdge({ relation: "valibot:map-key" }, key, direction)
-        : this.createNodeEdge({ relation: "valibot:map-key" }, UNKNOWN_NODE),
+        ? this.createEdge({ relation: "si-valibot:map-key" }, key, direction)
+        : this.createNodeEdge({ relation: "si-valibot:map-key" }, UNKNOWN_NODE),
       isValibotSchema(value)
-        ? this.createEdge({ relation: "valibot:map-value" }, value, direction)
-        : this.createNodeEdge({ relation: "valibot:map-value" }, UNKNOWN_NODE),
+        ? this.createEdge({ relation: "si-valibot:map-value" }, value, direction)
+        : this.createNodeEdge({ relation: "si-valibot:map-value" }, UNKNOWN_NODE),
     ];
-    return this.createKindNode("valibot:map", annotations, edges);
+    return this.createKindNode("si-valibot:map", annotations, edges);
   }
 
   private buildSet(
@@ -679,10 +679,10 @@ class Introspector {
     const value = (schema as { readonly value?: unknown }).value;
     const edges: Edge[] = [
       isValibotSchema(value)
-        ? this.createEdge({ relation: "valibot:set-item" }, value, direction)
-        : this.createNodeEdge({ relation: "valibot:set-item" }, UNKNOWN_NODE),
+        ? this.createEdge({ relation: "si-valibot:set-item" }, value, direction)
+        : this.createNodeEdge({ relation: "si-valibot:set-item" }, UNKNOWN_NODE),
     ];
-    return this.createKindNode("valibot:set", annotations as SetAnnotation, edges);
+    return this.createKindNode("si-valibot:set", annotations as SetAnnotation, edges);
   }
 
   private buildUnion(
@@ -759,7 +759,7 @@ class Introspector {
 
   private buildFile(
     schema: ValibotSchema,
-    kind: "valibot:file" | "valibot:blob",
+    kind: "si-valibot:file" | "si-valibot:blob",
     extra: Readonly<Record<string, unknown>>,
   ): Node {
     const annotations = this.annotations(schema, extra);
@@ -804,7 +804,7 @@ class Introspector {
     if (typeof constructor === "function" && typeof constructor.name === "string") {
       annotations.class = constructor.name;
     }
-    return this.createKindNode("valibot:instance", annotations as InstanceAnnotation);
+    return this.createKindNode("si-valibot:instance", annotations as InstanceAnnotation);
   }
 
   private buildNullable(
@@ -1128,19 +1128,23 @@ class Introspector {
     }
     switch (typeof value) {
       case "bigint":
-        return "valibot:bigint";
+        return "si-valibot:bigint";
       case "boolean":
         return "boolean";
       case "number":
-        return Number.isNaN(value) ? "valibot:nan" : Number.isInteger(value) ? "integer" : "number";
+        return Number.isNaN(value)
+          ? "si-valibot:nan"
+          : Number.isInteger(value)
+            ? "integer"
+            : "number";
       case "object":
-        return value instanceof Date ? "valibot:date" : "object";
+        return value instanceof Date ? "si-valibot:date" : "object";
       case "string":
         return "string";
       case "symbol":
-        return "valibot:symbol";
+        return "si-valibot:symbol";
       case "undefined":
-        return "valibot:undefined";
+        return "si-valibot:undefined";
       default:
         return "unknown";
     }

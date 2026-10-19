@@ -31,7 +31,7 @@ test("tuple, additional and contains array edges", () => {
   const additional = edgeOf(node, "items");
   assert.equal(additional.node().kind, "never");
 
-  const contains = edgeOf(node, "json-schema-draft-07:contains");
+  const contains = edgeOf(node, "si-json-schema-draft-07:contains");
   assert.equal(contains.node().kind, "integer");
 });
 

@@ -2,7 +2,8 @@
  * Expose a schema one node at a time. Each node reports a local kind and
  * direct relationship edges; an edge exposes its child node on demand. A
  * library or adapter declares the protocol on the schemas it can describe;
- * the `vendor` field identifies it and its vocabulary.
+ * the `vendor` field identifies it and prefixes the namespaced kinds,
+ * relations and annotations it defines.
  *
  * Unprefixed kind, relation and annotation names are reserved for the
  * common vocabulary; others take the form `namespace:name`. Consumers treat

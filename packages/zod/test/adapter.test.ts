@@ -19,12 +19,12 @@ test("open, any, never and opaque primitives", () => {
   assert.equal(introspect(z.any(), { direction: "input" }).kind, "any");
   assert.equal(introspect(z.unknown(), { direction: "input" }).kind, "any");
   assert.equal(introspect(z.never(), { direction: "input" }).kind, "never");
-  assert.equal(introspect(z.undefined(), { direction: "input" }).kind, "zod:undefined");
-  assert.equal(introspect(z.void(), { direction: "input" }).kind, "zod:void");
-  assert.equal(introspect(z.symbol(), { direction: "input" }).kind, "zod:symbol");
-  assert.equal(introspect(z.nan(), { direction: "input" }).kind, "zod:nan");
-  assert.equal(introspect(z.date(), { direction: "input" }).kind, "zod:date");
-  assert.equal(introspect(z.bigint(), { direction: "input" }).kind, "zod:bigint");
+  assert.equal(introspect(z.undefined(), { direction: "input" }).kind, "si-zod:undefined");
+  assert.equal(introspect(z.void(), { direction: "input" }).kind, "si-zod:void");
+  assert.equal(introspect(z.symbol(), { direction: "input" }).kind, "si-zod:symbol");
+  assert.equal(introspect(z.nan(), { direction: "input" }).kind, "si-zod:nan");
+  assert.equal(introspect(z.date(), { direction: "input" }).kind, "si-zod:date");
+  assert.equal(introspect(z.bigint(), { direction: "input" }).kind, "si-zod:bigint");
 });
 
 test("metadata is exposed as annotations", () => {

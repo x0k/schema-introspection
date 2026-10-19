@@ -56,28 +56,28 @@ test("number checks and integer kinds", () => {
 test("date, bigint, set and file constraints", () => {
   const date = kindNode(
     introspect(z.date().min(new Date(0)).max(new Date(1000)), { direction: "input" }),
-    "zod:date",
+    "si-zod:date",
   );
   assert.equal(date.annotations.minimum?.getTime(), 0);
   assert.equal(date.annotations.maximum?.getTime(), 1000);
 
   const bigint = kindNode(
     introspect(z.bigint().min(0n).max(10n), { direction: "input" }),
-    "zod:bigint",
+    "si-zod:bigint",
   );
   assert.equal(bigint.annotations.minimum, 0n);
   assert.equal(bigint.annotations.maximum, 10n);
 
   const set = kindNode(
     introspect(z.set(z.string()).min(1).max(3), { direction: "input" }),
-    "zod:set",
+    "si-zod:set",
   );
   assert.equal(set.annotations.minSize, 1);
   assert.equal(set.annotations.maxSize, 3);
 
   const file = kindNode(
     introspect(z.file().min(10).max(100).mime("image/png"), { direction: "input" }),
-    "zod:file",
+    "si-zod:file",
   );
   assert.equal(file.annotations.minSize, 10);
   assert.equal(file.annotations.maxSize, 100);

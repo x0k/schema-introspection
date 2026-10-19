@@ -118,7 +118,7 @@ export interface JsonSchemaDraft07Introspection extends SchemaIntrospectionV1<
   Relation
 > {}
 
-export const JSON_SCHEMA_DRAFT_07_VENDOR: string = "json-schema-draft-07";
+export const JSON_SCHEMA_DRAFT_07_VENDOR: string = "si-json-schema-draft-07";
 
 class Introspector {
   private readonly resolver: SchemaResolver;
@@ -546,8 +546,9 @@ class Introspector {
       const containsSchema = asSchema(schema.contains);
       const containsBase = this.childBase(containsSchema, base);
       edges.push(
-        this.createEdge({ relation: "json-schema-draft-07:contains" }, (context?: Context): Node =>
-          this.build(containsSchema, containsBase, context),
+        this.createEdge(
+          { relation: "si-json-schema-draft-07:contains" },
+          (context?: Context): Node => this.build(containsSchema, containsBase, context),
         ),
       );
     }
@@ -686,7 +687,7 @@ class Introspector {
     const child = asSchema(schema.not);
     const childBase = this.childBase(child, base);
     return this.createKindNode("unknown", this.annotations(schema, "unknown"), [
-      this.createEdge({ relation: "json-schema-draft-07:not" }, (context?: Context): Node =>
+      this.createEdge({ relation: "si-json-schema-draft-07:not" }, (context?: Context): Node =>
         this.build(child, childBase, context),
       ),
     ]);

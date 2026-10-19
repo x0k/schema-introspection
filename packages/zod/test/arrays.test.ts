@@ -38,11 +38,11 @@ test("tuples without a rest reject additional items", () => {
 test("maps and sets expose their element schemas", () => {
   const map = kindNode(
     introspect(z.map(z.string(), z.number()), { direction: "input" }),
-    "zod:map",
+    "si-zod:map",
   );
-  assert.equal(kindNode(edgeOf(map, "zod:map-key").node(), "string").kind, "string");
-  assert.equal(kindNode(edgeOf(map, "zod:map-value").node(), "number").kind, "number");
+  assert.equal(kindNode(edgeOf(map, "si-zod:map-key").node(), "string").kind, "string");
+  assert.equal(kindNode(edgeOf(map, "si-zod:map-value").node(), "number").kind, "number");
 
-  const set = kindNode(introspect(z.set(z.string()), { direction: "input" }), "zod:set");
-  assert.equal(kindNode(edgeOf(set, "zod:set-item").node(), "string").kind, "string");
+  const set = kindNode(introspect(z.set(z.string()), { direction: "input" }), "si-zod:set");
+  assert.equal(kindNode(edgeOf(set, "si-zod:set-item").node(), "string").kind, "string");
 });

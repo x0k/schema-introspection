@@ -110,15 +110,15 @@ export interface AnnotationMap {
   readonly number: NumberAnnotation;
   readonly object: ObjectAnnotation;
   readonly string: StringAnnotation;
-  readonly "zod:bigint": BigIntAnnotation;
-  readonly "zod:date": DateAnnotation;
-  readonly "zod:file": FileAnnotation;
-  readonly "zod:function": ZodAnnotation;
-  readonly "zod:map": ZodAnnotation;
-  readonly "zod:nan": NumberAnnotation;
-  readonly "zod:promise": ZodAnnotation;
-  readonly "zod:set": SetAnnotation;
-  readonly "zod:symbol": ZodAnnotation;
-  readonly "zod:undefined": ZodAnnotation;
-  readonly "zod:void": ZodAnnotation;
+  readonly "si-zod:bigint": BigIntAnnotation;
+  readonly "si-zod:date": DateAnnotation;
+  readonly "si-zod:file": FileAnnotation;
+  readonly "si-zod:function": ZodAnnotation;
+  readonly "si-zod:map": ZodAnnotation;
+  readonly "si-zod:nan": NumberAnnotation;
+  readonly "si-zod:promise": ZodAnnotation;
+  readonly "si-zod:set": SetAnnotation;
+  readonly "si-zod:symbol": ZodAnnotation;
+  readonly "si-zod:undefined": ZodAnnotation;
+  readonly "si-zod:void": ZodAnnotation;
 }

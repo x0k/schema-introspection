@@ -95,15 +95,15 @@ test("non-wrappers clear flags from their inner schema", () => {
 });
 
 test("functions, promises and instances expose their kinds", () => {
-  const fn = kindNode(introspect(v.function(), { direction: "input" }), "valibot:function");
-  assert.equal(fn.kind, "valibot:function");
+  const fn = kindNode(introspect(v.function(), { direction: "input" }), "si-valibot:function");
+  assert.equal(fn.kind, "si-valibot:function");
 
-  const promise = kindNode(introspect(v.promise(), { direction: "input" }), "valibot:promise");
+  const promise = kindNode(introspect(v.promise(), { direction: "input" }), "si-valibot:promise");
   assert.equal(edges(promise).length, 0);
 
   const instance = kindNode(
     introspect(v.instance(Date), { direction: "input" }),
-    "valibot:instance",
+    "si-valibot:instance",
   );
   assert.equal(instance.annotations.class, "Date");
 });

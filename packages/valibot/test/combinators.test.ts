@@ -84,6 +84,6 @@ test("nullable and nullish expose their extra branches and narrow with a context
   assert.equal(nullish.annotations.optional, true);
   assert.deepEqual(
     edges(nullish).map((edge) => edge.node().kind),
-    ["string", "null", "valibot:undefined"],
+    ["string", "null", "si-valibot:undefined"],
   );
 });

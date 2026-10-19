@@ -42,7 +42,10 @@ export declare namespace SchemaIntrospectionV1 {
     Relation extends AnyRelation = AnyRelation,
   > {
     readonly version: 1;
-    /** The library or adapter that declares the protocol. */
+    /**
+     * The implementation that declares the protocol. Also used as the
+     * namespace prefix for kinds, relations and annotations it defines.
+     */
     readonly vendor: string;
     /**
      * Describes the root node for the requested direction; a view that

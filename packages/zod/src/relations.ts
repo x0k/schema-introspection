@@ -2,32 +2,32 @@ import type { RelationV1 } from "@schema-introspection/spec";
 
 /** A key in a Zod map. */
 export interface MapKey {
-  readonly relation: "zod:map-key";
+  readonly relation: "si-zod:map-key";
 }
 
 /** A value in a Zod map. */
 export interface MapValue {
-  readonly relation: "zod:map-value";
+  readonly relation: "si-zod:map-value";
 }
 
 /** A value in a Zod set. */
 export interface SetItem {
-  readonly relation: "zod:set-item";
+  readonly relation: "si-zod:set-item";
 }
 
 /** The resolved value of a Zod promise. */
 export interface PromiseValue {
-  readonly relation: "zod:promise-value";
+  readonly relation: "si-zod:promise-value";
 }
 
 /** The arguments tuple of a Zod function. */
 export interface FunctionInput {
-  readonly relation: "zod:function-input";
+  readonly relation: "si-zod:function-input";
 }
 
 /** The return schema of a Zod function. */
 export interface FunctionOutput {
-  readonly relation: "zod:function-output";
+  readonly relation: "si-zod:function-output";
 }
 
 export type Relation =

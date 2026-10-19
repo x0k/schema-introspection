@@ -25,12 +25,12 @@ test("open, any, never and opaque primitives", () => {
   assert.equal(introspect(v.unknown(), { direction: "input" }).kind, "any");
   assert.equal(introspect(v.never(), { direction: "input" }).kind, "never");
   assert.equal(introspect(v.null(), { direction: "input" }).kind, "null");
-  assert.equal(introspect(v.undefined(), { direction: "input" }).kind, "valibot:undefined");
-  assert.equal(introspect(v.void(), { direction: "input" }).kind, "valibot:void");
-  assert.equal(introspect(v.symbol(), { direction: "input" }).kind, "valibot:symbol");
-  assert.equal(introspect(v.nan(), { direction: "input" }).kind, "valibot:nan");
-  assert.equal(introspect(v.date(), { direction: "input" }).kind, "valibot:date");
-  assert.equal(introspect(v.bigint(), { direction: "input" }).kind, "valibot:bigint");
+  assert.equal(introspect(v.undefined(), { direction: "input" }).kind, "si-valibot:undefined");
+  assert.equal(introspect(v.void(), { direction: "input" }).kind, "si-valibot:void");
+  assert.equal(introspect(v.symbol(), { direction: "input" }).kind, "si-valibot:symbol");
+  assert.equal(introspect(v.nan(), { direction: "input" }).kind, "si-valibot:nan");
+  assert.equal(introspect(v.date(), { direction: "input" }).kind, "si-valibot:date");
+  assert.equal(introspect(v.bigint(), { direction: "input" }).kind, "si-valibot:bigint");
   assert.equal(
     introspect(
       v.custom(() => true),

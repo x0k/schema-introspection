@@ -2,12 +2,12 @@ import type { RelationV1 } from "@schema-introspection/spec";
 
 /** The array has an item matching this child; validation paths do not descend. */
 export interface Contains {
-  readonly relation: "json-schema-draft-07:contains";
+  readonly relation: "si-json-schema-draft-07:contains";
 }
 
 /** The value must not match this child; validation paths do not descend. */
 export interface Not {
-  readonly relation: "json-schema-draft-07:not";
+  readonly relation: "si-json-schema-draft-07:not";
 }
 
 export type Relation =
