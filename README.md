@@ -99,6 +99,7 @@ pnpm lint    # lint
 pnpm check   # typecheck packages and tests
 pnpm build   # build packages and the docs site
 pnpm test    # run adapter tests
+pnpm check:all # run every check above plus package publishing checks
 ```
 
 Run a single package's script with a filter:

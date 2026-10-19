@@ -4,19 +4,26 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "changeset": "changeset",
     "check": "turbo run check",
+    "check:all": "pnpm fmt:check && pnpm lint && pnpm check && pnpm build && pnpm lint:publish && pnpm test",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
+    "lint:publish": "pnpm -r --filter \"./packages/*\" exec publint",
     "test": "turbo run test",
     "prepare": "husky",
+    "release": "pnpm build && changeset publish",
+    "version": "changeset version",
     "dev": "turbo run dev"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.3",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "oxfmt": "^0.73.0",
     "oxlint": "^1.88.0",
+    "publint": "^0.3.25",
     "turbo": "^2.11.9"
   },
   "lint-staged": {

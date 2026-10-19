@@ -24,14 +24,15 @@ schema language is a peer dependency.
 
 The repository is a pnpm workspace driven by Turborepo.
 
-| Command        | Description                         |
-| -------------- | ----------------------------------- |
-| `pnpm install` | Install all workspace dependencies. |
-| `pnpm fmt`     | Format files with oxfmt.            |
-| `pnpm lint`    | Lint with oxlint.                   |
-| `pnpm check`   | Type-check packages and tests.      |
-| `pnpm build`   | Build packages and the docs site.   |
-| `pnpm test`    | Run tests with `node --test`.       |
+| Command          | Description                           |
+| ---------------- | ------------------------------------- |
+| `pnpm install`   | Install all workspace dependencies.   |
+| `pnpm fmt`       | Format files with oxfmt.              |
+| `pnpm lint`      | Lint with oxlint.                     |
+| `pnpm check`     | Type-check packages and tests.        |
+| `pnpm build`     | Build packages and the docs site.     |
+| `pnpm test`      | Run tests with `node --test`.         |
+| `pnpm check:all` | Run every check, including `publint`. |
 
 Run a single package's script with a filter, for example:
 
