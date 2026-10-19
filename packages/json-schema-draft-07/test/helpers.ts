@@ -5,9 +5,9 @@ import { Ajv } from "ajv";
 import type { SchemaIntrospectionV1 } from "@schema-introspection/spec";
 
 import {
-  adapter,
+  toSchemaIntrospection,
   type JsonSchema,
-  type JsonSchemaDraft07AdapterOptions,
+  type JsonSchemaDraft07IntrospectionOptions,
   type JsonSchemaDraft07Edge,
   type JsonSchemaDraft07Node,
 } from "../src/index.ts";
@@ -18,9 +18,9 @@ export type Node = JsonSchemaDraft07Node;
 export function introspect(
   schema: JsonSchema,
   options: SchemaIntrospectionV1.Options,
-  adapterOptions: JsonSchemaDraft07AdapterOptions = {},
+  introspectionOptions: JsonSchemaDraft07IntrospectionOptions = {},
 ): Node {
-  return adapter(schema, adapterOptions)["~introspection"].introspect(options);
+  return toSchemaIntrospection(schema, introspectionOptions)["~introspection"].introspect(options);
 }
 
 const ajv = new Ajv({ strict: false });

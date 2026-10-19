@@ -59,7 +59,7 @@ export interface ZodUnsupportedHandler {
 
 export type ZodUnsupported = "throw" | ZodUnsupportedHandler;
 
-export interface ZodAdapterOptions {
+export interface ZodIntrospectionOptions {
   /** How schemas with an unrecognized definition are handled; defaults to `"throw"`. */
   readonly onUnsupported?: ZodUnsupported;
 }
@@ -79,7 +79,7 @@ class Introspector {
   private readonly resolvingLazy: Set<ZodSchema> = new Set();
   private readonly resolvingUnsupported: Set<ZodSchema> = new Set();
 
-  constructor(schema: ZodSchema, options: ZodAdapterOptions) {
+  constructor(schema: ZodSchema, options: ZodIntrospectionOptions) {
     this.root = schema;
     this.onUnsupported = options.onUnsupported ?? "throw";
   }
@@ -1039,7 +1039,10 @@ function innerTypeOf(schema: ZodSchema): ZodSchema {
   return isZodSchema(inner) ? inner : schema;
 }
 
-export function adapter(schema: ZodSchema, options: ZodAdapterOptions = {}): ZodIntrospection {
+export function toSchemaIntrospection(
+  schema: ZodSchema,
+  options: ZodIntrospectionOptions = {},
+): ZodIntrospection {
   const introspector = new Introspector(schema, options);
   return {
     "~introspection": {

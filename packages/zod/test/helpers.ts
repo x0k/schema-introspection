@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import type { SchemaIntrospectionV1 } from "@schema-introspection/spec";
 
 import {
-  adapter,
-  type ZodAdapterOptions,
+  toSchemaIntrospection,
+  type ZodIntrospectionOptions,
   type ZodEdge,
   type ZodNode,
   type ZodSchema,
@@ -16,9 +16,9 @@ export type Node = ZodNode;
 export function introspect(
   schema: ZodSchema,
   options: SchemaIntrospectionV1.Options,
-  adapterOptions: ZodAdapterOptions = {},
+  introspectionOptions: ZodIntrospectionOptions = {},
 ): Node {
-  return adapter(schema, adapterOptions)["~introspection"].introspect(options);
+  return toSchemaIntrospection(schema, introspectionOptions)["~introspection"].introspect(options);
 }
 
 export function edges(node: Node): readonly Edge[] {

@@ -128,7 +128,7 @@ export type JsonSchema202012UnresolvedReference =
   | "throw"
   | JsonSchema202012UnresolvedReferenceHandler;
 
-export interface JsonSchema202012AdapterOptions {
+export interface JsonSchema202012IntrospectionOptions {
   /** Retrieval URI for the root schema. */
   readonly baseUri?: string;
   /** Additional schema documents, keyed by their retrieval URI. */
@@ -163,7 +163,7 @@ class Introspector {
   private readonly mergedSchemas: WeakMap<object, Map<string, JsonSchema>> = new WeakMap();
   private readonly mergedResults: WeakMap<object, Set<string>> = new WeakMap();
 
-  constructor(schema: JsonSchema, options: JsonSchema202012AdapterOptions) {
+  constructor(schema: JsonSchema, options: JsonSchema202012IntrospectionOptions) {
     this.resolver = new SchemaResolver(schema, options);
     this.validator = options.validator;
     this.merger = options.merger;
@@ -1083,9 +1083,9 @@ class Introspector {
  * depends on the evaluation path may resolve differently than a validator
  * would.
  */
-export function adapter(
+export function toSchemaIntrospection(
   schema: JsonSchema,
-  options: JsonSchema202012AdapterOptions = {},
+  options: JsonSchema202012IntrospectionOptions = {},
 ): JsonSchema202012Introspection {
   const introspector = new Introspector(schema, options);
   return {

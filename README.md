@@ -12,10 +12,10 @@ languages:
 - [Zod](./packages/zod)
 
 ```ts
-import { adapter } from "@schema-introspection/json-schema-draft-07";
+import { toSchemaIntrospection } from "@schema-introspection/json-schema-draft-07";
 
 const schema = { type: "object", properties: { id: { type: "integer" } } };
-const { "~introspection": introspection } = adapter(schema);
+const { "~introspection": introspection } = toSchemaIntrospection(schema);
 const node = introspection.introspect({ direction: "input" });
 ```
 

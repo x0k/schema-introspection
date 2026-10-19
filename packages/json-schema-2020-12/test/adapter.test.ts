@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { adapter, JSON_SCHEMA_2020_12_VENDOR } from "../src/index.ts";
+import { toSchemaIntrospection, JSON_SCHEMA_2020_12_VENDOR } from "../src/index.ts";
 
 import { introspect } from "./helpers.ts";
 
@@ -12,7 +12,7 @@ test("empty and boolean schemas", () => {
 });
 
 test("protocol wrapper exposes the adapter", () => {
-  const wrapped = adapter({ type: "string" });
+  const wrapped = toSchemaIntrospection({ type: "string" });
   assert.equal(wrapped["~introspection"].version, 1);
   assert.equal(wrapped["~introspection"].vendor, JSON_SCHEMA_2020_12_VENDOR);
 

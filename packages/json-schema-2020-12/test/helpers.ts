@@ -5,9 +5,9 @@ import { Ajv2020 } from "ajv/dist/2020.js";
 import type { SchemaIntrospectionV1 } from "@schema-introspection/spec";
 
 import {
-  adapter,
+  toSchemaIntrospection,
   type JsonSchema,
-  type JsonSchema202012AdapterOptions,
+  type JsonSchema202012IntrospectionOptions,
   type JsonSchema202012Edge,
   type JsonSchema202012Node,
 } from "../src/index.ts";
@@ -18,9 +18,9 @@ export type Node = JsonSchema202012Node;
 export function introspect(
   schema: JsonSchema,
   options: SchemaIntrospectionV1.Options,
-  adapterOptions: JsonSchema202012AdapterOptions = {},
+  introspectionOptions: JsonSchema202012IntrospectionOptions = {},
 ): Node {
-  return adapter(schema, adapterOptions)["~introspection"].introspect(options);
+  return toSchemaIntrospection(schema, introspectionOptions)["~introspection"].introspect(options);
 }
 
 const ajv = new Ajv2020({ strict: false });

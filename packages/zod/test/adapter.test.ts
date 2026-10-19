@@ -3,13 +3,13 @@ import test from "node:test";
 
 import { z, type ZodType } from "zod";
 
-import { adapter, ZOD_VENDOR } from "../src/index.ts";
+import { toSchemaIntrospection, ZOD_VENDOR } from "../src/index.ts";
 
 import { introspect, kindNode } from "./helpers.ts";
 
 test("protocol wrapper exposes the adapter", () => {
   const schema = z.string();
-  const introspection = adapter(schema);
+  const introspection = toSchemaIntrospection(schema);
   assert.equal(introspection["~introspection"].version, 1);
   assert.equal(introspection["~introspection"].vendor, ZOD_VENDOR);
   assert.equal(introspection["~introspection"].introspect({ direction: "input" }).kind, "string");
