@@ -1,0 +1,54 @@
+---
+title: Schema introspection
+description: "A protocol for schema introspection: typed nodes and lazily resolved edges."
+template: splash
+hero:
+  tagline: "A protocol for schema introspection: each node reports a local kind, annotations, and lazily resolved edges."
+  actions:
+    - text: Read the protocol
+      link: /schema-introspection/protocol/
+      icon: right-arrow
+      variant: primary
+    - text: Browse adapters
+      link: /schema-introspection/adapters/
+      icon: right-arrow
+---
+
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+```ts
+// An implementation of the protocol, e.g. from a reference adapter.
+const { "~introspection": introspection } = implementation;
+
+const root = introspection.introspect({ direction: "input" });
+
+for (const edge of root.edges) {
+  if (edge.relation === "property" && edge.name === "id") {
+    edge.required; // true
+    edge.node().kind; // "integer"
+  }
+}
+```
+
+<h2>Reference adapters</h2>
+
+<CardGrid>
+  <LinkCard
+    title="JSON Schema draft-07"
+    href={`${import.meta.env.BASE_URL}adapters/json-schema-draft-07/`}
+  >
+    Reference resolution with documents, a validator and a merger.
+  </LinkCard>
+  <LinkCard
+    title="JSON Schema 2020-12"
+    href={`${import.meta.env.BASE_URL}adapters/json-schema-2020-12/`}
+  >
+    Dynamic references, unevaluated keywords and prefix items.
+  </LinkCard>
+  <LinkCard title="Zod" href={`${import.meta.env.BASE_URL}adapters/zod/`}>
+    Zod 4 definitions, pipes, wrappers and lazy recursion.
+  </LinkCard>
+  <LinkCard title="Valibot" href={`${import.meta.env.BASE_URL}adapters/valibot/`}>
+    Valibot pipes, actions, variants and lazy recursion.
+  </LinkCard>
+</CardGrid>

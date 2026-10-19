@@ -1,6 +1,7 @@
 node_modules
 dist
 .turbo
+.astro
 *.log
 .DS_Store
 .direnv

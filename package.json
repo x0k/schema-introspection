@@ -9,7 +9,8 @@
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "test": "turbo run test",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev": "turbo run dev"
   },
   "devDependencies": {
     "husky": "^9.1.7",

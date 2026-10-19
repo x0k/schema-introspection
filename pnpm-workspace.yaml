@@ -1,2 +1,5 @@
 packages:
+  - apps/*
   - packages/*
+minimumReleaseAgeExclude:
+  - astro@7.4.1
