@@ -114,7 +114,19 @@ export type JsonSchema202012Validator = Validator;
 
 export type JsonSchema202012Merger = Merger;
 
-export type JsonSchema202012UnresolvedReference = "unknown" | "throw";
+/**
+ * Provides a schema to use when a reference cannot be resolved. Returning
+ * `undefined` produces an `unknown` node annotated with the unresolved
+ * reference. Returning a schema that reproduces the same unresolved reference
+ * recurses until the adapter's cycle handling stops it.
+ */
+export interface JsonSchema202012UnresolvedReferenceHandler {
+  (reference: string, context: ResolutionContext): JsonSchema | undefined;
+}
+
+export type JsonSchema202012UnresolvedReference =
+  | "throw"
+  | JsonSchema202012UnresolvedReferenceHandler;
 
 export interface JsonSchema202012AdapterOptions {
   /** Retrieval URI for the root schema. */
@@ -125,7 +137,7 @@ export interface JsonSchema202012AdapterOptions {
   readonly validator?: Validator;
   /** When provided, schemas are merged before they are introspected. */
   readonly merger?: Merger;
-  /** How unresolved references are reported; defaults to `"unknown"`. */
+  /** How unresolved references are handled; defaults to `"throw"`. */
   readonly onUnresolvedReference?: JsonSchema202012UnresolvedReference;
 }
 
@@ -146,6 +158,7 @@ class Introspector {
   private readonly merger: Merger | undefined;
   private readonly documents: Readonly<Record<string, JsonSchema>>;
   private readonly onUnresolvedReference: JsonSchema202012UnresolvedReference;
+  private readonly resolvingUnresolved: Set<JsonSchemaObject> = new Set();
   private readonly cache: Map<JsonSchema, Map<string, Node>> = new Map();
   private readonly mergedSchemas: WeakMap<object, Map<string, JsonSchema>> = new WeakMap();
   private readonly mergedResults: WeakMap<object, Set<string>> = new WeakMap();
@@ -155,7 +168,7 @@ class Introspector {
     this.validator = options.validator;
     this.merger = options.merger;
     this.documents = options.documents ?? {};
-    this.onUnresolvedReference = options.onUnresolvedReference ?? "unknown";
+    this.onUnresolvedReference = options.onUnresolvedReference ?? "throw";
   }
 
   introspect(options: SchemaIntrospectionV1.Options): JsonSchema202012Node {
@@ -191,27 +204,21 @@ class Introspector {
     const reference = isSchemaObject(schema) ? this.referenceOf(schema) : undefined;
     if (isSchemaObject(schema) && reference !== undefined) {
       const resolved = this.resolveReference(schema, base);
-      if (resolved === undefined) {
-        if (this.onUnresolvedReference === "throw") {
-          throw new Error(`Cannot resolve reference "${reference}" from "${base}"`);
-        }
+      if (resolved !== undefined) {
+        node = this.buildReference(schema, resolved.schema, resolved.base, base, context);
+      } else if (this.resolvingUnresolved.has(schema)) {
         node = this.createKindNode("unknown", this.annotations(schema, "unknown"));
       } else {
-        const sibling = this.siblingSchema(schema);
-        node =
-          sibling === undefined
-            ? this.withReferenceAnnotations(
-                schema,
-                this.build(resolved.schema, resolved.base, context),
-              )
-            : this.createKindNode("unknown", this.annotations(schema, "unknown"), [
-                this.createEdge({ relation: "all-of" }, (edgeContext?: Context): Node =>
-                  this.build(resolved.schema, resolved.base, edgeContext),
-                ),
-                this.createEdge({ relation: "all-of" }, (edgeContext?: Context): Node =>
-                  this.createNode(sibling, base, edgeContext),
-                ),
-              ]);
+        this.resolvingUnresolved.add(schema);
+        try {
+          const target = this.unresolvedTarget(reference, base);
+          node =
+            target === undefined
+              ? this.createKindNode("unknown", this.annotations(schema, "unknown"))
+              : this.buildReference(schema, target, this.childBase(target, base), base, context);
+        } finally {
+          this.resolvingUnresolved.delete(schema);
+        }
       }
     } else {
       node = this.createNode(schema, base, context);
@@ -346,6 +353,34 @@ class Introspector {
     }
 
     return { schema: currentSchema, base: currentBase };
+  }
+
+  private unresolvedTarget(reference: string, base: string): JsonSchema | undefined {
+    if (this.onUnresolvedReference === "throw") {
+      throw new Error(`Cannot resolve reference "${reference}" from "${base}"`);
+    }
+    return this.onUnresolvedReference(reference, this.resolutionContext(base));
+  }
+
+  private buildReference(
+    schema: JsonSchemaObject,
+    target: JsonSchema,
+    targetBase: string,
+    base: string,
+    context?: Context,
+  ): JsonSchema202012Node {
+    const sibling = this.siblingSchema(schema);
+    if (sibling === undefined) {
+      return this.withReferenceAnnotations(schema, this.build(target, targetBase, context));
+    }
+    return this.createKindNode("unknown", this.annotations(schema, "unknown"), [
+      this.createEdge({ relation: "all-of" }, (edgeContext?: Context): Node =>
+        this.build(target, targetBase, edgeContext),
+      ),
+      this.createEdge({ relation: "all-of" }, (edgeContext?: Context): Node =>
+        this.createNode(sibling, base, edgeContext),
+      ),
+    ]);
   }
 
   private createNode(

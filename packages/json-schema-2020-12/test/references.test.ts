@@ -115,9 +115,10 @@ test("external documents and unresolved references", () => {
   );
   assert.equal(property(node, "value").node().kind, "string");
 
-  const missing = introspect({ $ref: "missing.json#/value" }, { direction: "input" });
-  assert.equal(missing.kind, "unknown");
-  assert.equal(missing.annotations.$ref, "missing.json#/value");
+  assert.throws(
+    () => introspect({ $ref: "missing.json#/value" }, { direction: "input" }),
+    /Cannot resolve reference "missing\.json#\/value"/,
+  );
 
   assert.throws(
     () =>
@@ -128,4 +129,62 @@ test("external documents and unresolved references", () => {
       ),
     /Cannot resolve reference "missing\.json#\/value"/,
   );
+
+  const seen: Array<{ reference: string; baseUri: string }> = [];
+  const missing = introspect(
+    { $ref: "missing.json#/value" },
+    { direction: "input" },
+    {
+      onUnresolvedReference: (reference, context) => {
+        seen.push({ reference, baseUri: context.baseUri });
+        return undefined;
+      },
+    },
+  );
+  assert.equal(missing.kind, "unknown");
+  assert.equal(missing.annotations.$ref, "missing.json#/value");
+  assert.deepEqual(seen, [
+    {
+      reference: "missing.json#/value",
+      baseUri: "https://schema-introspection.invalid/json-schema-2020-12/root",
+    },
+  ]);
+
+  const substituted = introspect(
+    { $ref: "missing.json#/value" },
+    { direction: "input" },
+    { onUnresolvedReference: () => ({ type: "string", title: "Fallback" }) },
+  );
+  assert.equal(substituted.kind, "string");
+  assert.equal(substituted.annotations.title, "Fallback");
+});
+
+test("an unresolved reference handler combines with reference siblings", () => {
+  const substituted = introspect(
+    { $ref: "missing.json#/value", minLength: 3 },
+    { direction: "input" },
+    { onUnresolvedReference: () => ({ type: "string" }) },
+  );
+  assert.equal(substituted.kind, "unknown");
+  assert.deepEqual(
+    substituted.edges.map((edge) => edge.relation),
+    ["all-of", "all-of"],
+  );
+  const target = kindNode(substituted.edges[0].node(), "string");
+  const sibling = kindNode(substituted.edges[1].node(), "string");
+  assert.equal(target.annotations.minLength, undefined);
+  assert.equal(sibling.annotations.minLength, 3);
+});
+
+test("an unresolved reference handler that returns the same reference terminates", () => {
+  const schema = { $ref: "missing.json#/value" };
+  const node = introspect(
+    schema,
+    { direction: "input" },
+    {
+      onUnresolvedReference: () => schema,
+    },
+  );
+  assert.equal(node.kind, "unknown");
+  assert.equal(node.annotations.$ref, "missing.json#/value");
 });
