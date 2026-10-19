@@ -8,6 +8,11 @@
     "schema",
     "zod"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/x0k/schema-introspection.git",
+    "directory": "packages/zod"
+  },
   "files": [
     "dist"
   ],

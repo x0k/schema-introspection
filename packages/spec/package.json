@@ -9,6 +9,11 @@
     "standard",
     "typescript"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/x0k/schema-introspection.git",
+    "directory": "packages/spec"
+  },
   "files": [
     "dist"
   ],

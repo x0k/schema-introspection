@@ -8,6 +8,11 @@
     "json-schema",
     "schema"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/x0k/schema-introspection.git",
+    "directory": "packages/json-schema-draft-07"
+  },
   "files": [
     "dist"
   ],
