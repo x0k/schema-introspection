@@ -16,6 +16,16 @@ export default defineConfig({
           href: "https://github.com/x0k/schema-introspection",
         },
       ],
+      head: [
+        {
+          tag: "script",
+          attrs: {
+            "data-goatcounter": "https://schema-introspection.counter.x0k.dev/count",
+            async: true,
+            src: "https://schema-introspection.counter.x0k.dev/count.js",
+          },
+        },
+      ],
       editLink: {
         baseUrl: "https://github.com/x0k/schema-introspection/edit/main/apps/docs/",
       },
@@ -31,8 +41,14 @@ export default defineConfig({
           label: "Adapters",
           items: [
             { label: "Overview", link: "/adapters/" },
-            { label: "JSON Schema draft-07", link: "/adapters/json-schema-draft-07/" },
-            { label: "JSON Schema 2020-12", link: "/adapters/json-schema-2020-12/" },
+            {
+              label: "JSON Schema draft-07",
+              link: "/adapters/json-schema-draft-07/",
+            },
+            {
+              label: "JSON Schema 2020-12",
+              link: "/adapters/json-schema-2020-12/",
+            },
             { label: "Zod", link: "/adapters/zod/" },
             { label: "Valibot", link: "/adapters/valibot/" },
           ],
